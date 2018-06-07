@@ -1,19 +1,9 @@
-ÔªøBASE DE DONNEES (MYSQL) - VERSION 2.1 pour Node-Extract_SQL-Insert(commit num√©ro 3)     
-
-// DERNIERES MODIFICATIONS : (22/05/2018)
-
-//***************MODIFICATIONS *************************************************************************************
-
-// ~~~~~~ Ajout de la table 'id_mails contenant le num√©ro d'identifiant des mail donn√©es par l'API Gmail 
-// ~~~~~~ Test√©e sous Windows et Lubuntu
-
-/******************************************************************************************************************/
+BASE DE DONNEES (MYSQL) - VERSION 3.0 pour Node-Extract_SQL-Insert(commit N∞ 6)     
 
 
+Nouvelle table 'cron_infos' (vÈrificateur de lancement du module de t‚che programmÈe 'node_cron' permettant d'automatiser le lancement du fichier 'quickstart-2.1.js' ‡ intervalles dÈterminÈes
 
-// Pour l'utiliser, copiez-collez ce fichier dans votre console MYSQL.
+// Pour l'utiliser, copiez-collez le fichier 'datafishuk-3.0.sql' dans votre console MYSQL.
+(il contient les donnÈes de base de la table 'species' (id_specie, name_specie, super-zones et zones), qui sont immuables)
 
-// le fichier contient les donn√©es de base de la table 'species' (id_specie, name_specie, super-zones et zones)
-//  >> √† tester (observer la stabilit√© des champs sur l'ensemble des donn√©es archiv√©es et √† venir)
-
-**** ATTENTION : l'utilisation de ce fichier est irr√©vocable et supprime d√©finitivement les donn√©es pr√©c√©demment int√©gr√©es √† votre base de donn√©es !
+**** ATTENTION : l'utilisation de ce fichier est irrÈvocable et supprime dÈfinitivement les donnÈes de votre base de donnÈe.
