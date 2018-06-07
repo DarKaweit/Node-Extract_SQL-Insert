@@ -94,8 +94,9 @@ précédemment enregistrées sur ~/.credentials/gmail-nodejs-quickstart.json
 -------------------------------------------------------------------------*/
 let SCOPES = ['https://www.googleapis.com/auth/gmail.readonly'];
 let TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
-  process.env.USERPROFILE) + '/.credentials/'; // répertoire (modifiable au besoin) où est automatiquement enregistré le jeton d'accès nécessaire pour accéder à l'API Gmail (chez moi : '/home/yanniscode_bzh/.credentials' sur 'Lubuntu' et 'D:\Users\isen-user\.credentials' sur Windows)
+  process.env.USERPROFILE) + '/.credentials-api/'; // répertoire (modifiable au besoin) où est automatiquement enregistré le jeton d'accès nécessaire pour accéder à l'API Gmail (chez moi : '/home/yanniscode_bzh/.credentials' sur 'Lubuntu' et 'D:\Users\isen-user\.credentials' sur Windows)
 let TOKEN_PATH = TOKEN_DIR + 'gmail-nodejs-quickstart.json';
+
 
 /*------------------------------------------------------------------------
       Charger les secrets du client à partir d'un fichier local.
@@ -460,13 +461,13 @@ function xlsxDownload(auth, id, mailIndex, attachmentIndex, whitForMail) {
         } else {*/
             console.log('\n\n    ---------->>> 312 - fichier(s) "fichier-sakana-whitform.xlsx" trouvé(s) :  \n');
             console.log('313 - fichier-sakana-whitform-'+ today +'-'+ mailIndex +'__'+ attachmentIndex +'.xlsx" trouvé(s) !...');
-            console.log(__dirname +'/tableaux/xlsx/fichier-sakana-whitform-'+ today +'-'+ mailIndex +'__'+ attachmentIndex +'.xlsx \n\n')         
+            console.log(__dirname +'/Tableaux/xlsx/fichier-sakana-whitform-'+ today +'-'+ mailIndex +'__'+ attachmentIndex +'.xlsx \n\n')         
          
-            fs.writeFile(__dirname +'/tableaux/xlsx/fichier-sakana-whitform-'+ today +'-'+ mailIndex +'__'+ attachmentIndex +'.xlsx', results.data, 'base64', function (err, results) {
+            fs.writeFile(__dirname +'/Tableaux/xlsx/fichier-sakana-whitform-'+ today +'-'+ mailIndex +'__'+ attachmentIndex +'.xlsx', results.data, 'base64', function (err, results) {
 //                console.log('317 - attachment infos + '+ auth, id, mailIndex, attachmentIndex, whitForMail +'\n');
 //                console.log(data);
 //                try {
-                    console.log('\n    320 -> Téléchargement de pièce jointe... Enregistrées sous : "fichier-sakana-whitform-'+ today +'-'+ mailIndex +'__'+ attachmentIndex +'.xlsx" dans le dossier "./tableaux/xlsx". \n\n');                
+                    console.log('\n    320 -> Téléchargement de pièce jointe... Enregistrées sous : "fichier-sakana-whitform-'+ today +'-'+ mailIndex +'__'+ attachmentIndex +'.xlsx" dans le dossier "./Tableaux/xlsx". \n\n');                
 //                    console.log('test xlsxDownload !!!' + auth, id, mailIndex, attachmentIndex, whitForMail + "\n\n");
                     parseXlsx(auth, id, mailIndex, attachmentIndex, whitForMail);
 //                } catch (err) {
@@ -497,7 +498,7 @@ function parseXlsx(auth, id, mailIndex, attachmentIndex, whitForMail) {
 //    console.log('test parseXlsx ##############'+ auth, id, '\n'+ mailIndex, attachmentIndex, whitForMail +'\n\n');
 
 
-    const obj = xlsx.parse(__dirname + '/tableaux/xlsx/fichier-sakana-whitform-'+ today +'-'+ mailIndex +'__'+ attachmentIndex +'.xlsx'); // Parser un fichier EXCEL --> référence de la pièce-jointe indiquée ici.
+    const obj = xlsx.parse(__dirname + '/Tableaux/xlsx/fichier-sakana-whitform-'+ today +'-'+ mailIndex +'__'+ attachmentIndex +'.xlsx'); // Parser un fichier EXCEL --> référence de la pièce-jointe indiquée ici.
 
     // console.log('infos "id, mailIndex, attachmentIndex, pj" : '+ id, mailIndex, attachmentIndex, idpj);
     console.log(' \n ---');
@@ -537,7 +538,7 @@ function parseXlsx(auth, id, mailIndex, attachmentIndex, whitForMail) {
     for(let i = 0;  i < 68; i++) {// On s'arrêtera dans un premier temps à la ligne 68 (= fin de la feuille 1), sinon : remplacer i par 'row.length'
         writeStr += rows[i].join("|") + ("\n");
 //  }; 
-        fs.writeFile(__dirname + '/tableaux/csv/fichier-sakana-whitform-'+ today + '-'+ mailIndex +'__'+ attachmentIndex +'.csv', writeStr, function(err) {
+        fs.writeFile(__dirname + '/Tableaux/csv/fichier-sakana-whitform-'+ today + '-'+ mailIndex +'__'+ attachmentIndex +'.csv', writeStr, function(err) {
             if (err) throw err;        
         //    console.log(err);       
         });
@@ -587,7 +588,7 @@ let csvData=[];    // ATTENTION ! Variable placée ici, car si au dessus de fonc
   
     //---- LECTURE du fichier parsé ('.csv') :
     
-    fs.createReadStream(__dirname + '/tableaux/csv/fichier-sakana-whitform-'+ today +'-'+ mailIndex +'__'+ attachmentIndex +'.csv')
+    fs.createReadStream(__dirname + '/Tableaux/csv/fichier-sakana-whitform-'+ today +'-'+ mailIndex +'__'+ attachmentIndex +'.csv')
     
     //----Prise en compte des options déclarées :
         
@@ -635,7 +636,7 @@ let csvData=[];    // ATTENTION ! Variable placée ici, car si au dessus de fonc
             
             writeStr += csvData[i].join("|") + ("\n");
     
-            fs.writeFile(__dirname + '/tableaux/csv_test/fichier-sakana-whitform-'+ today +'-'+ mailIndex +'__'+ attachmentIndex +'.csv', writeStr, function(err)
+            fs.writeFile(__dirname + '/Tableaux/csv_test/fichier-sakana-whitform-'+ today +'-'+ mailIndex +'__'+ attachmentIndex +'.csv', writeStr, function(err)
             {                    
                 if (err) throw err;
             });
