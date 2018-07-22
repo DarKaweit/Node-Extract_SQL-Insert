@@ -12,7 +12,7 @@ const connection = mysql2.createConnection ({
     database: "test_sakana"
 });
 
-
+//  ordre des chiffres : seconde / minute / heure / numéro du mois / jour du mois / jour de la semaine (de 1 à 7)
 //    cron.schedule('0 0 15 * * 4-5', function() { // version dont les dates pourrait convenir à notre projet : déclencher le script du Mardi au Vendredi, à 15 h 00 min 00 s
 
 

@@ -1,47 +1,32 @@
 // QUICKSTART 2.1  : Ajout de plusieurs mails et leurs pièces jointes à la Base de Données BDD (version optimisée)
 
-// DERNIERES MODIFICATIONS : (22/05/2018)
-
-
-//***************MODIFICATIONS *************************************************************************************
-
-// RECUPÉRATION DE NOUVEAUX MAILS : 
-// ~~~~~~ Ajout des fonction 'mailCheck' et 'mailInsert' permettant d'insérer de nouveaux mails sans conflit avec 
-// ceux existant (pour cela, une nouvelle table SQL a été créée : 'id_mails' contenant l'identifiant du mail et un 'timestamp') > voir le nouveau fichier de la Base de données (datafishuk-2.0.sql) créé à cet effet
-
-
-//***************NOTES *********************************************************************************************
-
-// ~~~~~~ MySQL2 semble plus efficace que MySQL2 ici...
-// ~~~~~~ Gestion des fonctions plus logiques pour la récupération des mails et pièces-jointes
-// ~~~~~~ Option message 'unread' / 'read' désactivée pour la récupération des pièces jointes de façon indifférenciée)
-// ~~~~~~ Testé sous Windows et Lubuntu (testée jusqu'à 17 mails en une transaction)
-
+// DERNIERES MODIFICATIONS : (21/07/2018)
 
 //***************A FAIRE *********************************************************************************************
 
 // ~~~~~~ Relecture du code globale (gestion d'erreur)
-// ~~~~~~ Transformation du fichiers en plusieurs fichiers .js contenant les fonctions séparées
+// ~~~~~~ Transformation du fichiers en plusieurs fichiers '.js' contenant les fonctions séparées
+// ~~~~~~ Fonctionnement avec MariaDB
 
 /*------------------------------------------------------------------------
   Modules node installés pour l'utilisation de l'extraction et le parsage
 -------------------------------------------------------------------------*/
-let {google}   = require('googleapis');     // accolades ajoutées (nouveau type d'écriture)
-let googleAuth = require('google-auth-library');
-let bodyparser = require('body-parser');
-let schedule   = require('node-schedule');
-let readline   = require('readline');
-let parse      = require('csv-parse');
-let xlsx       = require('node-xlsx');
-let mysql2     = require('mysql2'); // semble mieux marcher que Mysql
-let fs         = require('fs');
+const {google}   = require('googleapis');     // accolades ajoutées (nouveau type d'écriture)
+const googleAuth = require('google-auth-library');
+const bodyparser = require('body-parser');
+const schedule   = require('node-schedule');
+const readline   = require('readline');
+const parse      = require('csv-parse');
+const xlsx       = require('node-xlsx');
+const mysql2     = require('mysql2'); // semble mieux marcher que Mysql
+const fs         = require('fs');
 
-let debug = true; // gestion d'erreur
+const debug = true; // gestion d'erreur
 
 
 //---- VARIABLE POUR AJOUTER LA DATE DU JOUR (au format DD-MM-YYYY) au nom de fichiers enregistré :
 
-let d = new Date(); 
+let d = new Date();
 let today = d.getDate() + "_" + (d.getMonth() + 1) + "_" + d.getFullYear();
 // console.log('date du jour : ' + today);
 
@@ -94,7 +79,7 @@ précédemment enregistrées sur ~/.credentials/gmail-nodejs-quickstart.json
 -------------------------------------------------------------------------*/
 let SCOPES = ['https://www.googleapis.com/auth/gmail.readonly'];
 let TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
-  process.env.USERPROFILE) + '/.credentials-api/'; // répertoire (modifiable au besoin) où est automatiquement enregistré le jeton d'accès nécessaire pour accéder à l'API Gmail (chez moi : '/home/yanniscode_bzh/.credentials' sur 'Lubuntu' et 'D:\Users\isen-user\.credentials' sur Windows)
+  process.env.USERPROFILE) + '/.credentials-api/'; // répertoire (modifiable au besoin) où est automatiquement enregistré le jeton d'accès nécessaire pour accéder à l'API Gmail (chez moi : '/home/yanniscode_bzh/.credentials-api' sur 'Lubuntu' et 'D:\Users\isen-user\.credentials' sur Windows)
 let TOKEN_PATH = TOKEN_DIR + 'gmail-nodejs-quickstart.json';
 
 
@@ -103,10 +88,10 @@ let TOKEN_PATH = TOKEN_DIR + 'gmail-nodejs-quickstart.json';
 -------------------------------------------------------------------------*/
 fs.readFile('client_secret.json', function processClientSecrets(err, content) {
     if (err) {
-        console.log('59 - Erreur du chargement du fichier "client secret": ' + err);
+        console.log('106 - Erreur du chargement du fichier "client secret": ' + err);
         return;
     }
-        console.log('62 - Chargement du fichier "client secret" (API Gmail). -------------------------------------------------------------------');
+        console.log('109 - Chargement du fichier "client secret" (API Gmail). -------------------------------------------------------------------');
 
     /*------------------------------------------------------------------------
         Autorisez un client avec les informations d'identification chargées, 
@@ -140,10 +125,10 @@ function authorize(credentials, callback) {
 -------------------------------------------------------------------------*/
     fs.readFile(TOKEN_PATH, function (err, token) {
         if (err) {
-        console.log('Allez récupérer un nouveau jeton d\'identification Gmail... \n');
+        console.log('143 - Allez récupérer un nouveau jeton d\'identification Gmail... \n');
         getNewToken(oauth2Client, callback);
         } else {
-            console.log('100 ----------------Jeton d\'identification Gmail actuel utilisé ! \n');
+            console.log('146 - Jeton d\'identification Gmail actuel utilisé ! \n');
             oauth2Client.credentials = JSON.parse(token);
             callback(oauth2Client);
         }        
@@ -168,19 +153,19 @@ function getNewToken(oauth2Client, callback) {
         access_type: 'offline',
         scope: SCOPES
     });
-    console.log('Autoriser cette application en visitant cette url: \n', authUrl + '\n');
+    console.log('171 - Autoriser cette application en visitant cette url: \n', authUrl + '\n');
     let rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout
     });
-    rl.question('Entrez le code de cette page ici: \n', function (code) {
+    rl.question('176 - Entrez le code de cette page ici: \n', function (code) {
         rl.close();
         oauth2Client.getToken(code, function (err, token) {
             if (err) {
-                console.log('Erreur lors de la tentative de récupération du jeton d\'accès...', err);
+                console.log('180 - Erreur lors de la tentative de récupération du jeton d\'accès...', err);
                 return;
             } else {
-                console.log('\n jeton d\'accès récupéré ! \n');
+                console.log('\n 183 - jeton d\'accès récupéré ! \n');
                 oauth2Client.credentials = token;
                 storeToken(token);
                 callback(oauth2Client);
@@ -211,7 +196,7 @@ function storeToken(token) {
         }
     }
     fs.writeFile(TOKEN_PATH, JSON.stringify(token)); // écriture du fichier 'gmail-nodejs-quickstart.json' contenant le jeton d'authentification
-    console.log('Jeton stocké sur ' + TOKEN_PATH + '\n');
+    console.log('214 - Jeton stocké sur ' + TOKEN_PATH + '\n');
 
 };
 
@@ -232,7 +217,7 @@ console.log(' \n ---');
 
 function listMail(auth, id) {
 
-    console.log('178 - paramètre "auth" : '+ auth +'\n\n');
+    console.log('235 - paramètre "auth" : '+ auth +'\n\n');
     
     let gmail = google.gmail('v1');
     let fichierPj = 'whitform.xlsx';
@@ -250,24 +235,24 @@ function listMail(auth, id) {
     },
     
     function(err, results) {
-        if (err) { throw err + '\nl.211 - Erreur de connexion à Gmail\n'};
+        if (err) { throw err + '\nl.253 - Erreur de connexion à Gmail\n'};
 
     // console.log('paramètre results : '+ results); 
     //    console.log(gmail.users.messages);
     //    console.log(fichierPj);
 
-        console.log('217 --------------------------------------------------------------------------------------------------------------\n   ----------SELECTION DES MAILS CONTENANT UNE OU PLUSIEURS PIECES JOINTES "fichier-sakana-whitform"---------------\n------------------------------------------------------------------------');
-        console.log('\n\n [1] 217 -- Sélection d\'un mail contenant "fichier-sakana-whitform". ---------------------------\n\n');
-        
-        for(let mailIndex = 0; mailIndex < results.messages.length; mailIndex++) { //----- modifier ici au besoin le nombre de mails que l'on veut récupérer ( de '0 <= mailIndex' à mailIndex < 'results.messages.length')
-            
+        console.log('259  --------------------------------------------------------------------------------------------------------------\n   ----------SELECTION DES MAILS CONTENANT UNE OU PLUSIEURS PIECES JOINTES "fichier-sakana-whitform"---------------\n------------------------------------------------------------------------');
+        console.log('\n\n [1] 260 -- Sélection d\'un mail contenant "whitform.xlsx". ---------------------------\n\n');
+
+        for(let mailIndex = 0; mailIndex < results.messages.length; mailIndex++) { 
+            //----- modifier ici au besoin le nombre de mails que l'on veut récupérer ( de '0 <= mailIndex' à mailIndex < 'results.messages.length')
             try {
                 let whitForMail = results.messages[mailIndex].id;
-                console.log('228 - whitForMail :');
+                console.log('266 - whitForMail :');
                 console.log(whitForMail);
-                console.log('225 - Nombre total de mails correspondants répertoriés dans votre boîte : ' + results.messages.length);
-                console.log('\n\n\    226 -> Un mail contenant une ou plusieurs pièces jointes "fichier-sakana-whitform" à été trouvé. Identifiant du mail : '+ whitForMail +'\n');
-                console.log('227 - index du mail : '+ mailIndex +'\n');
+                console.log('268 - Nombre total de mails correspondants répertoriés dans votre boîte : ' + results.messages.length);
+                console.log('\n\n\    269 -> Un mail contenant une ou plusieurs pièces jointes "whitform.xlsx" à été trouvé. Identifiant du mail : '+ whitForMail +'\n');
+                console.log('270 - index du mail : '+ mailIndex +'\n');
                 //    console.log(results.messages[mailIndex].id + '\n\n'); 
                 //    console.log(auth, whitForMail, mailIndex +'\n\n');                
 //                console.log('227 - recupIdAttachment (id du mail) : ' + auth, whitForMail, mailIndex +'\n\n');
@@ -275,7 +260,7 @@ function listMail(auth, id) {
 //                recupIdAttachment(auth, whitForMail, mailIndex, whitForMail);    // Appelle la fonction "recupIdAttachment"
                 }                
             catch(err) {
-                console.log('\n    235 -> erreur (connexion ?)\n');
+                console.log('\n    278 -> erreur (connexion ?)\n');
                 return err;
             }
                   
@@ -303,11 +288,11 @@ function mailCheck(auth, whitForMail, mailIndex) {
     let mailCount = connection.query('SELECT mail_number FROM id_mails WHERE mail_number = ?', whitForMail, function (err, results) {
         
         if(results.length > 0) {
-            console.log("304 - la donnée est déjà présente");
+            console.log("306 - la donnée est déjà présente");
             console.log(results);
         } else {
             console.log('#########################');
-            console.log('308 - le résultat : ')
+            console.log('310 - le résultat : ')
             console.log (results);
             mailIdInsert(auth, whitForMail, mailIndex);
         }
@@ -324,17 +309,17 @@ function mailIdInsert(auth, whitForMail, mailIndex) {
          
         if (err) {
             console.log('///////////////////////');
-            console.log('102 - mailInsert values: ')
+            console.log('327 - mailInsert values: ')
             console.log (results);
 //                throw err;
         } else {                 
             console.log('#########################');
-            console.log('107 - mailInsert values: ')
+            console.log('332 - mailInsert values: ')
             console.log (mailInsert.values);
             console.log('#########################');
-            console.log('result :')
+            console.log('335 - result :')
             console.log(results);
-            console.log('313 - mailInsert :'+ mailIndex, whitForMail);
+            console.log('337 - mailInsert :'+ mailIndex, whitForMail);
             recupIdAttachment(auth, whitForMail, mailIndex, whitForMail);                 
         };
     });                    
@@ -348,17 +333,17 @@ function mailIdInsert(auth, whitForMail, mailIndex) {
             
             if (err) {
                 console.log('///////////////////////');
-                console.log('102 - mailInsert values: ')
+                console.log('351 - mailInsert values: ')
                 console.log (results);
 //                throw err;
             } else {                 
                 console.log('#########################');
-                console.log('107 - mailInsert values: ')
+                console.log('356 - mailInsert values: ')
                 console.log (mailInsert.values);
                 console.log('#########################');
-                console.log('result :')
+                console.log('359 - result :')
                 console.log(results);
-                console.log('313 - mailInsert :'+ mailIndex, whitForMail);
+                console.log('361 - mailInsert :'+ mailIndex, whitForMail);
                 recupIdAttachment(auth, whitForMail, mailIndex, whitForMail);                 
             };
         });                    
@@ -385,10 +370,10 @@ function mailIdInsert(auth, whitForMail, mailIndex) {
 
 // le paramètre 'whitForMail' devient 'id'
 function recupIdAttachment(auth, id, mailIndex, whitForMail) {    //  console.log('paramètre id mail : '+ id),
-      console.log('342 - check### whitForMail + mailIndex : '+ auth, id, mailIndex, whitForMail +'\n\n')
+      console.log('388 - check### whitForMail + mailIndex : '+ auth, id, mailIndex, whitForMail +'\n\n')
 
     console.log(' \n ---');
-    console.log('\n\n [2] 345 -- Recherche des IDs de pièces jointes "fichier-sakana-whitform"... ------------------------------------------');
+    console.log('\n\n [2] 391 -- Recherche des IDs de pièces jointes "fichier-sakana-whitform"... ------------------------------------------');
     console.log(' \n ---');
 
     let gmail = google.gmail('v1');
@@ -401,29 +386,29 @@ function recupIdAttachment(auth, id, mailIndex, whitForMail) {    //  console.lo
     function (err, results) {
         //   console.log('show attachment "results": '+ results);
         
-        console.log('########### -358 -'+ whitForMail +'\n'+ err);
+        console.log('########### - 404 -'+ whitForMail +'\n'+ err);
 
         if (err) {
-        console.log('\n 361 - Echec de votre connexion au(x) mail(s). Vérifiez les paramètres de connexion sur "quickstart.js". ' + err + '\n');
+        console.log('\n 407 - Echec de votre connexion au(x) mail(s). Vérifiez les paramètres de connexion sur "quickstart.js". ' + err + '\n');
         return;
         }
-        console.log('\n 254 -------- Connexion réussie à un mail : \n\n');
+        console.log('\n 410 -------- Connexion réussie à un mail : \n\n');
         for (let attachmentIndex = 1; attachmentIndex < results.payload.parts.length; attachmentIndex++) {
             try {
                 let pj = results.payload.parts[attachmentIndex].body.attachmentId;
-                console.log(' 257 - nombre de pièces jointes (+ 1) : ' + results.payload.parts.length +'\n\n');
-                console.log('271 - id de la pièce-jointe : \n\n' + pj +'\n\n');
+                console.log(' 414 - nombre de pièces jointes (+ 1) : ' + results.payload.parts.length +'\n\n');
+                console.log('415 - id de la pièce-jointe : \n\n' + pj +'\n\n');
                 //            console.log('########## test 1 - PJ !!! '+ auth, id, mailIndex, pj, attachmentIndex +'\n');
                 //    console.log('\n    -> Pièce jointe "fichier-sakana-whitform.xlsx" identifiée sous le numéro : \n\n'+ pj +'\n\n');
-                console.log('\n    279-> Pièce jointe "fichier-sakana-whitform-'+ today +'-'+ mailIndex +'__'+ attachmentIndex +'.xlsx" identifiée sous le numéro de  "pj" : \n\n'+ pj +'\n\n 279 - index pièce jointe : '+ attachmentIndex +'\n\n');
-//                console.log('283 - '+ auth, whitForMail, mailIndex, attachmentIndex, pj)
+                console.log('\n    418-> Pièce jointe "fichier-sakana-whitform-'+ today +'-'+ mailIndex +'__'+ attachmentIndex +'.xlsx" identifiée sous le numéro de  "pj" : \n\n'+ pj +'\n\n 279 - index pièce jointe : '+ attachmentIndex +'\n\n');
+//                console.log('419 - '+ auth, whitForMail, mailIndex, attachmentIndex, pj)
 
 //                mailCheck(mailIndex, attachmentIndex, whitForMail)
                 xlsxDownload(auth, pj, mailIndex, attachmentIndex, whitForMail); // recupData   // Appelle la fonction "recupData"
             }        
             catch (err) {
-                console.log('286 - xlsxDownload : ' + auth, id, mailIndex, attachmentIndex + '\n\n');
-                console.log('\n    -> 287 - Pièce jointe "fichier-sakana-whitform" non reconnue. \n');
+                console.log('425 - xlsxDownload : ' + auth, id, mailIndex, attachmentIndex + '\n\n');
+                console.log('\n - 426 - Pièce jointe "fichier-sakana-whitform" non reconnue. \n');
                 return err;
             };  
         };
@@ -440,9 +425,9 @@ let gmail = google.gmail('v1');
 
 
 function xlsxDownload(auth, id, mailIndex, attachmentIndex, whitForMail) {
-//  console.log('305 - test 2 - PJ !!! '+ auth, id, mailIndex, attachmentIndex, whitForMail);
+//  console.log('443 - test 2 - PJ !!! '+ auth, id, mailIndex, attachmentIndex, whitForMail);
 
-    console.log('\n\n\n\n [3] - 302 - Récupération des données d\'une pièce jointe "fichier-sakana-whitform.xlsx". -------------------- \n\n');
+    console.log('\n\n\n\n [3] - 445 - Récupération des données d\'une pièce jointe "fichier-sakana-whitform.xlsx". -------------------- \n\n');
 
     let gmail = google.gmail('v1');
 
@@ -457,9 +442,9 @@ function xlsxDownload(auth, id, mailIndex, attachmentIndex, whitForMail) {
       
  
 /*        if (err) {
-            console.log('\n\n    ----------<<< 323 - Aucun fichier à récupérer.' + err + '\n');
+            console.log('\n\n    ----------<<< 460 - Aucun fichier à récupérer.' + err + '\n');
         } else {*/
-            console.log('\n\n    ---------->>> 312 - fichier(s) "fichier-sakana-whitform.xlsx" trouvé(s) :  \n');
+            console.log('\n\n    ---------->>> 462 - fichier(s) "fichier-sakana-whitform.xlsx" trouvé(s) :  \n');
             console.log('313 - fichier-sakana-whitform-'+ today +'-'+ mailIndex +'__'+ attachmentIndex +'.xlsx" trouvé(s) !...');
             console.log(__dirname +'/Tableaux/xlsx/fichier-sakana-whitform-'+ today +'-'+ mailIndex +'__'+ attachmentIndex +'.xlsx \n\n')         
          
@@ -467,11 +452,11 @@ function xlsxDownload(auth, id, mailIndex, attachmentIndex, whitForMail) {
 //                console.log('317 - attachment infos + '+ auth, id, mailIndex, attachmentIndex, whitForMail +'\n');
 //                console.log(data);
 //                try {
-                    console.log('\n    320 -> Téléchargement de pièce jointe... Enregistrées sous : "fichier-sakana-whitform-'+ today +'-'+ mailIndex +'__'+ attachmentIndex +'.xlsx" dans le dossier "./Tableaux/xlsx". \n\n');                
+                    console.log('\n    470 -> Téléchargement de pièce jointe... Enregistrées sous : "fichier-sakana-whitform-'+ today +'-'+ mailIndex +'__'+ attachmentIndex +'.xlsx" dans le dossier "./Tableaux/xlsx". \n\n');                
 //                    console.log('test xlsxDownload !!!' + auth, id, mailIndex, attachmentIndex, whitForMail + "\n\n");
                     parseXlsx(auth, id, mailIndex, attachmentIndex, whitForMail);
 //                } catch (err) {
-//                    console.log('\n 332 - Le téléchargement à échoué. Vérifiez les paramètres.\n' + err);
+//                    console.log('\n 474 - Le téléchargement à échoué. Vérifiez les paramètres.\n' + err);
 //                    return err;
 //                }
                 
