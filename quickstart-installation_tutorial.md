@@ -80,7 +80,7 @@ Error: ENOENT: no such file or directory, open '/home/yanniscode_bzh/Documents/c
 
 *****************
 
-NOUVELLE ERREUR dans le module 'quickstart-2.1.js' de 'ukquota.dataviz.fish' - status = irrésolu 
+NOUVELLE ERREUR dans le module 'quickstart-2.1.js' de 'ukquota.dataviz.fish' - status = irrésolu (OBSOLÈTE ?)
 
 -TypeError: Cannot read property 'length' of undefined at /home/yanniscode_bzh/Documents/code.bzh/projets/sakana/ukquota.dataviz.fish/quickstart-2.1.js:261:61
 

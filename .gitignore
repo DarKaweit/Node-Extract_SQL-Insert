@@ -1,5 +1,9 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
+#fichiers persos ou confidentiels
+infos_persos.txt
+client_secret.json
+
 # compiled output
 /dist
 /dist-server
@@ -11,6 +15,8 @@ client_secret.json
 
 # dependencies
 /node_modules
+/Tableaux/csv
+/Tableaux/xlsx
 
 # IDEs and editors
 /.idea
