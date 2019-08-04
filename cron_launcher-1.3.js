@@ -46,7 +46,9 @@ cron.schedule('15 * * * * *', function() { // test à chaque minute (à la secon
 
     connection.beginTransaction(function(err, result) {
 
-        let sql = ('INSERT INTO cron_infos (id_cron) VALUE (NULL)'); // insérer un numéro d'identifiant ('cron_number') à chaque transaction (+ un timestamp auto-généré)
+        let sql = ('INSERT INTO cron_infos (id_cron) VALUE (NULL)');
+        // MARCHE PAS comme ça :
+        // let sql = ('INSERT INTO cron_infos (id_cron) VALUE (NULL); INSERT INTO mail_infos (id_cron) VALUE ("SELECT LAST_INSERT_ID() FROM cron_infos LIMIT 1")'); // insérer un numéro d'identifiant ('cron_number') à chaque transaction (+ un timestamp auto-généré)
 
         connection.query(sql, function (err, result) { // début de connexion à la Base de Données MySQL
 

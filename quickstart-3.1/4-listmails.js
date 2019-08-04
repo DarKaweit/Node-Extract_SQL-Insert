@@ -44,7 +44,7 @@ module.exports = {
             'auth' : auth, // Utilise l'authentification Oauth 
             'userId' : 'me',
             'id': id, // id du message = PARAMÈTRE ENLEVÉ (PAS NÉCESSAIRE ICI ?? ON NE RECHERCHE PAS UN MESSAGE PAR SON ID)
-                "criteria": {
+            "criteria": {
             //     "from": '',
             //     "to": 'quotauk@gmail.com',
             //     "subject": 'WHITEFISH REPORT',

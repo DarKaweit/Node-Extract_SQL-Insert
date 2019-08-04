@@ -35,7 +35,7 @@ module.exports = {
         // }
 
         // connection.query('SELECT * FROM id_mails WHERE mail_date = ?', whitFormHistoryId, function (err, results) {
-        let mailCheck = connection.query('SELECT mail_number FROM id_mails WHERE mail_number = ?', whitForMail, function (err, results) {
+        let mailCheck = connection.query('SELECT mail_number FROM mail_infos WHERE mail_number = ?', whitForMail, function (err, results) {
 
             console.log('5-40 - mailCheck values: ')
             console.log (mailCheck.values);

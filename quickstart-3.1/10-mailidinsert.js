@@ -38,20 +38,20 @@ module.exports = {
         console.log('10 - mailTimeValues : ' + mailTimeValues);
         // let mailInsert = connection.query('INSERT INTO id_mails (mail_number, mail_date) VALUES (?, ?)', mailTimeValues, function (err, results) { // marche pas !
 
-        let mailInsert = connection.query('INSERT INTO id_mails (mail_number) VALUES (?)', mailIndex, function (err, results) {
+        let mailInsert = connection.query('INSERT INTO mail_infos (mail_number) VALUES (?)', mailIndex, function (err, results) {
             if (err) {
-                console.log('10 - mailInsert erreur : ')
+                console.log('10 - mailInsert erreur : ');
                 // console.log (err);
                 throw err;
             } else {
-                console.log('10 - mailInsert values: ')
+                console.log('10 - mailInsert values: ');
                 console.log (mailInsert.values);
-                console.log('10 - result :')
+                console.log('10 - result :');
                 console.log(results);
                 console.log('10 - mailInsert :'+ mailIndex, whitForMail, whitFormHistoryId);
 
                 // recupidattachment.recupidattachment(auth, whitForMail, mailIndex, whitForMail, whitFormHistoryId);
-                              
+            
             };
         });
                     

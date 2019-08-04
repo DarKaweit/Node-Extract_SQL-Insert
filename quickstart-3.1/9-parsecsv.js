@@ -160,9 +160,8 @@ module.exports = {
                 //  console.log(reformatdates);
 
 
-                let sql = 'INSERT INTO fishing (id_specie, date, value_landing, value_quota) VALUES ?';
-                    
-
+                let sql = 'INSERT INTO fishing (id_fishzone_join, date, value_landing, value_quota) VALUES ?';
+                console.log('SQL : ' + sql);
 
 
 // *************************************************************************************************
@@ -175,8 +174,9 @@ module.exports = {
                         
                     //---- Gestion de reconnaissance des cellules vides ('not defined') en Base de données :
 
-                    if (landing_specie == "") {                
-                        landing_specie = null;
+                    if (landing_specie == "" || landing_specie == null) {
+                        landing_specie = 0;          
+                        // landing_specie = null;
                     };
 
                     /* if (typeof landing_specie === 'undefined' || landing_specie === " " || landing_specie === null) { // AUTRE METHODE ?
@@ -185,15 +185,16 @@ module.exports = {
                         
                     let quota_specie = csvData[i + 7][15];
 
-                    if (quota_specie == "") {
-                        quota_specie = null;
+                    if (quota_specie == "" || quota_specie == null) {
+                        quota_specie = 0;
+                        // quota_specie = null;
                     };
 
                     let result = [
                         [i, reformatdates, landing_specie, quota_specie]
                     ];
                     //    result.push();
-                    //    console.log(result);
+                    // console.log('SQL REQUEST : ' + result); 
                 
 
                     //----  insertion des résultats en BDD (méthode des transactions)  
@@ -243,14 +244,16 @@ module.exports = {
             
                     let landing_specie = csvData[i + 9][13];           
                     
-                    if (landing_specie == "") {                
-                        landing_specie = null;
+                    if (landing_specie == "" || landing_specie == null) {
+                        landing_specie = 0;          
+                        // landing_specie = null;
                     };
                     
                     let quota_specie = csvData[i + 9][15];
 
-                    if (quota_specie == "") {
-                        quota_specie = null;
+                    if (quota_specie == "" || quota_specie == null) {
+                        quota_specie = 0;
+                        // quota_specie = null;
                     };
                     
                     let result = [
@@ -298,14 +301,16 @@ module.exports = {
                 
                     let landing_specie = csvData[i + 11][13];         
                     
-                    if (landing_specie == "") {                
-                        landing_specie = null;
+                    if (landing_specie == "" || landing_specie == null) {
+                        landing_specie = 0;          
+                        // landing_specie = null;
                     };
                 
                     let quota_specie = csvData[i + 11][15];
 
-                    if (quota_specie == "") {
-                        quota_specie = null;
+                    if (quota_specie == "" || quota_specie == null) {
+                        quota_specie = 0;
+                        // quota_specie = null;
                     };
 
                     let result = [
@@ -354,14 +359,16 @@ module.exports = {
 
                     let landing_specie = csvData[i + 24][13];
 
-                    if(landing_specie == "") {                
-                        landing_specie = null;
+                    if (landing_specie == "" || landing_specie == null) {
+                        landing_specie = 0;          
+                        // landing_specie = null;
                     };
                 
                     let quota_specie = csvData[i + 24][15];
 
-                    if(quota_specie == "") {
-                        quota_specie = null;
+                    if (quota_specie == "" || quota_specie == null) {
+                        quota_specie = 0;
+                        // quota_specie = null;
                     };      
                     
                     let result = [

@@ -5,15 +5,10 @@
 //------------------------------------------------------------------------*/
 
 
+// DERNIERES MODIFICATIONS : (22/07/2019)
 
-// *********** PROBLÈMES RÉSOLUS (08/01/2019) *************
+// ~~~~~~ Modification du parsage pour l'adapter à la Base de Données révisée et permettre l'ajout de coordonnées géographiques
 
-// ~~~~~~ Filtrage des mails de récapitulatif dans l'année (= fichiers 'xlsx' en doublon) > FAIT
-// ~~~~~~ Filtrer les mails avec PJ en doublon (= fichiers 'xlsx' en doublon)
-
-
-
-// DERNIERES MODIFICATIONS : (25/01/2019)
 
 // *************** EN COURS : *********************************************************************************************
 
@@ -21,7 +16,6 @@
 
 // ***************A FAIRE : *********************************************************************************************
 
-// ~~~~~~ Transformation du fichiers en plusieurs fichiers '.js' contenant les fonctions séparées
 // ~~~~~~ Ajouter la date d'origine du mail au nom de fichier 'whitform.xlsx' sauvegardé, ou bien dans la BDD - tables 'id_mails' ?? (pour comparer date du jour d'envoi et celle de réception par Gmail)
 // ~~~~~~ Fonctionnement avec MariaDB
 
